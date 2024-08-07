@@ -60,9 +60,9 @@ pub enum FuturesWebsocketEvent {
     DayTicker(DayTickerEvent),
     MiniTicker(MiniTickerEvent),
     MiniTickerAll(Vec<MiniTickerEvent>),
-    IndexPrice(IndexPriceEvent),
     MarkPrice(MarkPriceEvent),
     MarkPriceAll(Vec<MarkPriceEvent>),
+    IndexPrice(IndexPriceEvent),
     DayTickerAll(Vec<DayTickerEvent>),
     Kline(KlineEvent),
     ContinuousKline(ContinuousKlineEvent),
@@ -81,7 +81,7 @@ pub struct FuturesWebSockets<'a> {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 enum FuturesEvents {
-    Vec(Vec<DayTickerEvent>),
+    VecDayTickerEvent(Vec<DayTickerEvent>),
     DayTickerEvent(DayTickerEvent),
     BookTickerEvent(BookTickerEvent),
     MiniTickerEvent(MiniTickerEvent),
@@ -89,9 +89,9 @@ enum FuturesEvents {
     AccountUpdateEvent(AccountUpdateEvent),
     OrderTradeEvent(model::OrderTradeEvent),
     AggrTradesEvent(AggrTradesEvent),
-    IndexPriceEvent(IndexPriceEvent),
     MarkPriceEvent(MarkPriceEvent),
     VecMarkPriceEvent(Vec<MarkPriceEvent>),
+    IndexPriceEvent(IndexPriceEvent),
     TradeEvent(TradeEvent),
     KlineEvent(KlineEvent),
     ContinuousKlineEvent(ContinuousKlineEvent),
@@ -164,16 +164,16 @@ impl<'a> FuturesWebSockets<'a> {
 
         if let Ok(events) = serde_json::from_value::<FuturesEvents>(value) {
             let action = match events {
-                FuturesEvents::Vec(v) => FuturesWebsocketEvent::DayTickerAll(v),
+                FuturesEvents::VecDayTickerEvent(v) => FuturesWebsocketEvent::DayTickerAll(v),
                 FuturesEvents::DayTickerEvent(v) => FuturesWebsocketEvent::DayTicker(v),
                 FuturesEvents::BookTickerEvent(v) => FuturesWebsocketEvent::BookTicker(v),
                 FuturesEvents::MiniTickerEvent(v) => FuturesWebsocketEvent::MiniTicker(v),
                 FuturesEvents::VecMiniTickerEvent(v) => FuturesWebsocketEvent::MiniTickerAll(v),
                 FuturesEvents::AccountUpdateEvent(v) => FuturesWebsocketEvent::AccountUpdate(v),
                 FuturesEvents::OrderTradeEvent(v) => FuturesWebsocketEvent::OrderTrade(v),
-                FuturesEvents::IndexPriceEvent(v) => FuturesWebsocketEvent::IndexPrice(v),
                 FuturesEvents::MarkPriceEvent(v) => FuturesWebsocketEvent::MarkPrice(v),
                 FuturesEvents::VecMarkPriceEvent(v) => FuturesWebsocketEvent::MarkPriceAll(v),
+                FuturesEvents::IndexPriceEvent(v) => FuturesWebsocketEvent::IndexPrice(v),
                 FuturesEvents::TradeEvent(v) => FuturesWebsocketEvent::Trade(v),
                 FuturesEvents::ContinuousKlineEvent(v) => FuturesWebsocketEvent::ContinuousKline(v),
                 FuturesEvents::IndexKlineEvent(v) => FuturesWebsocketEvent::IndexKline(v),
