@@ -685,8 +685,19 @@ impl FuturesAccount {
         }
 
         let request = build_signed_request(parameters, self.recv_window)?;
-        println!("{}", request);
         self.client
             .get_signed(API::Futures(Futures::Income), Some(request)).await
+    }
+
+    pub async fn trade_fee<S>(&self, symbol: S) -> Result<crate::futures::model::TradeFee>
+    where
+        S: Into<String>,
+    {
+        let mut parameters: BTreeMap<String, String> = BTreeMap::new();
+        parameters.insert("symbol".into(), symbol.into());
+
+        let request = build_signed_request(parameters, self.recv_window)?;
+        self.client
+            .get_signed(API::Futures(Futures::TradeFee), Some(request)).await
     }
 }

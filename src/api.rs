@@ -44,6 +44,7 @@ pub enum Spot {
     Account,
     MyTrades,
     UserDataStream,
+    TradeFee,
 }
 
 pub enum Sapi {
@@ -93,6 +94,8 @@ pub enum Futures {
     OpenOrders,
     UserDataStream,
     Income,
+    TradeFee,
+    Basis,
 }
 
 impl From<API> for String {
@@ -122,6 +125,7 @@ impl From<API> for String {
                 Spot::Account => "/api/v3/account",
                 Spot::MyTrades => "/api/v3/myTrades",
                 Spot::UserDataStream => "/api/v3/userDataStream",
+                Spot::TradeFee => "/sapi/v1/asset/tradeFee",
             },
             API::Savings(route) => match route {
                 Sapi::AllCoins => "/sapi/v1/capital/config/getall",
@@ -169,6 +173,8 @@ impl From<API> for String {
                 Futures::OpenOrders => "/fapi/v1/openOrders",
                 Futures::UserDataStream => "/fapi/v1/listenKey",
                 Futures::Income => "/fapi/v1/income",
+                Futures::TradeFee => "/fapi/v1/commissionRate",
+                Futures::Basis => "/futures/data/basis",
             },
         })
     }

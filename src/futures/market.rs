@@ -32,6 +32,8 @@ use serde_json::Value;
 use crate::api::API;
 use crate::api::Futures;
 
+use super::account::ContractType;
+
 // TODO
 // Make enums for Strings
 // Add limit parameters to functions
@@ -287,5 +289,37 @@ impl FuturesMarket {
         let request = build_request(parameters);
         self.client
             .get(API::Futures(Futures::OpenInterestHist), Some(request)).await
+    }
+
+    /// contract_type: CURRENT_QUARTER, NEXT_QUARTER, PERPETUAL
+    ///
+    /// period: "5m","15m","30m","1h","2h","4h","6h","12h","1d"
+    ///
+    /// limit: Default 30,Max 500
+    pub async fn get_basis<S>(
+        &self,
+        symbol: S,
+        contract_type: ContractType,
+        period: String,
+        limit: u32,
+        start_time: Option<u64>,
+        end_time: Option<u64>
+    ) -> Result<Vec<crate::futures::model::Basis>>
+    where
+        S: Into<String>,
+    {
+        let mut parameters: BTreeMap<String, String> = BTreeMap::new();
+        parameters.insert("symbol".into(), symbol.into().to_uppercase());
+        parameters.insert("contractType".into(), String::from(contract_type));
+        parameters.insert("period".into(), period);
+        parameters.insert("limit".into(), limit.to_string());
+        if let Some(start_time) = start_time {
+            parameters.insert("startTime".into(), start_time.to_string());
+        }
+        if let Some(end_time) = end_time {
+            parameters.insert("endTime".into(), end_time.to_string());
+        }
+        let request = build_request(parameters);
+        self.client.get(API::Futures(Futures::Basis), Some(request)).await
     }
 }

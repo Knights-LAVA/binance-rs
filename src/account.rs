@@ -2,7 +2,7 @@ use error_chain::bail;
 
 use crate::util::build_signed_request;
 use crate::model::{
-    AccountInformation, Balance, Empty, Order, OrderCanceled, TradeHistory, Transaction,
+    AccountInformation, Balance, Empty, Order, OrderCanceled, TradeFee, TradeHistory, Transaction
 };
 use crate::client::Client;
 use crate::errors::Result;
@@ -752,6 +752,20 @@ impl Account {
         let request = build_signed_request(parameters, self.recv_window)?;
         self.client
             .get_signed(API::Spot(Spot::MyTrades), Some(request)).await
+    }
+
+    pub async fn trade_fee<S>(&self, symbol: Option<S>) -> Result<Vec<TradeFee>>
+    where
+        S: Into<String>,
+    {
+        let mut parameters: BTreeMap<String, String> = BTreeMap::new();
+        if let Some(symbol) = symbol {
+            parameters.insert("symbol".into(), symbol.into());
+        }
+
+        let request = build_signed_request(parameters, self.recv_window)?;
+        self.client
+            .get_signed(API::Spot(Spot::TradeFee), Some(request)).await
     }
 
     fn build_order(&self, order: OrderRequest) -> BTreeMap<String, String> {

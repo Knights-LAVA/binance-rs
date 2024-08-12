@@ -350,6 +350,16 @@ pub struct TradeHistory {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
+pub struct TradeFee {
+    pub symbol: String,
+    #[serde(with = "string_or_float")]
+    pub maker_commission: f64,
+    #[serde(with = "string_or_float")]
+    pub taker_commission: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct PriceStats {
     pub symbol: String,
     pub price_change: String,

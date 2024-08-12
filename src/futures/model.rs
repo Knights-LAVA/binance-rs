@@ -625,3 +625,30 @@ pub struct Income {
     pub tran_id: u64,
     pub trade_id: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeFee {
+    pub symbol: String,
+    #[serde(with = "string_or_float")]
+    pub maker_commission_rate: f64,
+    #[serde(with = "string_or_float")]
+    pub taker_commission_rate: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Basis {
+    #[serde(rename = "pair")]
+    pub symbol: String,
+    pub contract_type: String,
+    #[serde(with = "string_or_float")]
+    pub index_price: f64,
+    #[serde(rename = "futuresPrice", with = "string_or_float")]
+    pub future_price: f64,
+    #[serde(with = "string_or_float")]
+    pub basis: f64,
+    #[serde(with = "string_or_float")]
+    pub basis_rate: f64,
+    pub timestamp: u64,
+}
